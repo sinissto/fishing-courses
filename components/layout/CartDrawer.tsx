@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -43,15 +43,30 @@ export default function CartDrawer() {
   } = useCart();
   const { language } = useLanguage();
   const t = translations[language];
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setCartOpen(false);
+      setIsClosing(false);
+    }, 300); // Match animation duration
+  };
 
   useEffect(() => {
     if (isCartOpen) {
+      // Get scrollbar width before hiding it
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
     } else {
       document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "0px";
     }
     return () => {
       document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "0px";
     };
   }, [isCartOpen]);
 
@@ -61,12 +76,22 @@ export default function CartDrawer() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-50 transition-opacity animate-[slide-left_0.3s_ease-out]"
-        onClick={() => setCartOpen(false)}
+        className={`fixed inset-0 bg-black/50 z-50 ${
+          isClosing
+            ? "animate-[slide-right_0.3s_ease-out]"
+            : "animate-[slide-left_0.3s_ease-out]"
+        }`}
+        onClick={handleClose}
       />
 
       {/* Drawer */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col animate-[slide-left_0.3s_ease-out]">
+      <div
+        className={`fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col ${
+          isClosing
+            ? "animate-[slide-right_0.3s_ease-out]"
+            : "animate-[slide-left_0.3s_ease-out]"
+        }`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-xl font-bold flex items-center gap-2">
@@ -74,7 +99,7 @@ export default function CartDrawer() {
             {t.cart}
           </h2>
           <button
-            onClick={() => setCartOpen(false)}
+            onClick={handleClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <X className="w-6 h-6" />
