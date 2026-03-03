@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
+import Image from "next/image";
+import logo from "@/assets/images/logo/logo.png";
 
 const translations = {
   en: {
@@ -120,16 +122,23 @@ export default function Header() {
       {/* Main Navigation - Overlapping the chyron */}
       <div className="container relative">
         <nav className="h-[128px] absolute left-4 right-4 lg:left-8 lg:right-8 -top-12 bg-white rounded-lg shadow-lg ">
-          <div className="h-full flex items-center justify-between px-6 py-8">
+          <div className="h-full flex items-center justify-between px-6 py-8 mx-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+              {/* <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-lg">🎣</span>
               </div>
               <span className="font-bold text-xl text-text-dark hidden sm:block">
                 Angelschein
                 <span className="text-primary">Kurse</span>
-              </span>
+                </span> */}
+              <Image
+                src={logo.src}
+                alt="Logo"
+                width={282}
+                height={100}
+                className="w-[140px] h-auto"
+              />
             </Link>
 
             {/* Desktop Navigation */}
