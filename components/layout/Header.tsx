@@ -55,21 +55,21 @@ export default function Header() {
     <header className="relative z-50">
       {/* Chyron - Top Bar */}
       <div className="bg-primary-darkest text-white">
-        <div className="container flex justify-between pt-4 pb-16">
+        <div className="container flex justify-center md:justify-between pt-4 pb-16">
           {/* Left side - Address and Email */}
-          <div className="hidden md:flex items-center gap-6 pl-24">
+          <div className="hidden md:flex items-center gap-6 lg:pl-24">
             <a
               href="https://maps.google.com/?q=Musterstraße+123,+10115+Berlin"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[16px]/[26px] hover:text-primary-light transition-colors"
+              className="flex items-center gap-2 text-[14px]/[24px] lg:text-[16px]/[26px] hover:text-primary-light transition-colors"
             >
               <FaMapMarkerAlt className="w-4 h-4" />
               <span>Musterstraße 123, 81505 München</span>
             </a>
             <a
               href="mailto:info@angelschein-kurse.de"
-              className="flex items-center gap-2 text-[16px]/[26px] hover:text-primary-light transition-colors"
+              className="flex items-center gap-2 text-[14px]/[24px] lg:text-[16px]/[26px] hover:text-primary-light transition-colors"
             >
               <FaEnvelope className="w-4 h-4" />
               <span>info@angelschein-kurse.de</span>
@@ -77,7 +77,7 @@ export default function Header() {
           </div>
 
           {/* Right side - Language selector and Social icons */}
-          <div className="flex items-center gap-4 ml-auto pr-24">
+          <div className="flex items-center justify-center  gap-4 lg:ml-auto pr-0 lg:pr-24">
             {/* Language Selector */}
             {/*<select*/}
             {/*  value={language}*/}
@@ -165,8 +165,8 @@ export default function Header() {
 
       {/* Main Navigation - Overlapping the chyron */}
       <div className="container relative">
-        <nav className="h-[128px] absolute left-4 right-4 lg:left-8 lg:right-8 -top-12 bg-white rounded-lg shadow-lg flex items-center">
-          <div className="flex-1 flex justify-between items-center h-full mx-20">
+        <nav className="h-[96px] lg:h-[128px] absolute left-4 right-4 lg:left-8 lg:right-8 -top-12 bg-white rounded-lg shadow-lg flex items-center">
+          <div className="flex-1 flex justify-between items-center gap-6 h-full mx-4 lg:mx-6 xl:mx-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               {/* <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
@@ -181,7 +181,7 @@ export default function Header() {
                 alt="Logo"
                 width={282}
                 height={100}
-                className="w-[140px] h-auto"
+                className="w-[90px] lg:w-[140px] h-auto"
               />
             </Link>
 
@@ -189,7 +189,7 @@ export default function Header() {
             <div className="hidden lg:flex lg:h-full items-center gap-8">
               <Link
                 href="/"
-                className={`h-full font-medium text-gray-800 hover:text-primary transition-colors px-2 py-3 flex items-center justify-center relative ${
+                className={`h-full w-[96px] font-medium text-gray-800 hover:text-primary transition-colors  flex items-center justify-center relative  ${
                   pathname === "/" ? "text-primary" : ""
                 }`}
               >
@@ -201,11 +201,11 @@ export default function Header() {
 
               {/* Courses Dropdown */}
               <div
-                className="h-full relative flex items-center"
+                className="h-full w-[96px] relative flex items-center "
                 onMouseLeave={() => setCoursesDropdownOpen(false)}
               >
                 <button
-                  className={`h-full flex items-center gap-1 font-medium text-gray-800 hover:text-primary cursor-pointer transition-colors px-2 py-3 relative ${
+                  className={`h-full flex items-center gap-1 font-medium text-gray-800 hover:text-primary cursor-pointer transition-colors relative ${
                     pathname.startsWith("/courses") ? "text-primary" : ""
                   }`}
                   // onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
@@ -254,7 +254,7 @@ export default function Header() {
 
               <Link
                 href="/about"
-                className={`h-full font-medium text-gray-800 hover:text-primary transition-colors px-2 py-3 flex items-center justify-center relative ${
+                className={`h-full w-[96px] font-medium text-gray-800 hover:text-primary transition-colors flex items-center justify-center relative  ${
                   pathname === "/about" ? "text-primary" : ""
                 }`}
               >
@@ -265,7 +265,7 @@ export default function Header() {
               </Link>
               <Link
                 href="/contact"
-                className={`h-full font-medium text-gray-800 hover:text-primary transition-colors px-2 py-3 flex items-center justify-center relative ${
+                className={`h-full w-[96px] font-medium text-gray-800 hover:text-primary transition-colors flex items-center justify-center relative ${
                   pathname === "/contact" ? "text-primary" : ""
                 }`}
               >
@@ -284,12 +284,14 @@ export default function Header() {
               >
                 <div
                   className={
-                    "w-13 h-13 bg-primary-100 flex items-center justify-center rounded-full group-hover:bg-primary-200 transition-colors"
+                    "w-10 h-10 xl:w-13 xl:h-13 bg-primary-100 flex items-center justify-center rounded-full group-hover:bg-primary-200 transition-colors"
                   }
                 >
                   <FaPhoneAlt className="w-5 h-5  " />
                 </div>
-                <span>+49 30 123 456 789</span>
+                <span className={"text-[14px]/[24px] xl:text-[16px]/[26px] "}>
+                  +49 30 123 456 789
+                </span>
               </a>
 
               {/* Cart Button */}
@@ -299,10 +301,10 @@ export default function Header() {
               >
                 <div
                   className={
-                    "w-13 h-13 bg-primary-100 flex items-center justify-center rounded-full group-hover:text-primary-dark transition-colors"
+                    "w-10 h-10 xl:w-13 xl:h-13 bg-primary-100 flex items-center justify-center rounded-full group-hover:text-primary-dark transition-colors"
                   }
                 >
-                  <FaCartArrowDown className="w-6 h-6 text-primary group-hover:text-primary-dark" />
+                  <FaCartArrowDown className="w-5 h-5 text-primary group-hover:text-primary-dark" />
                 </div>
                 {itemCount > 0 && (
                   <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
