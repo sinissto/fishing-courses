@@ -59,7 +59,7 @@ export default function CartDrawer() {
       const scrollbarWidth =
         window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
-      if (window.innerWidth > 768) {
+      if (window.innerWidth > 1024) {
         document.body.style.paddingRight = `${scrollbarWidth}px`;
       } else {
         document.body.style.paddingRight = `0px`;
