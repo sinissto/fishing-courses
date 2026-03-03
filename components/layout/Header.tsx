@@ -43,13 +43,24 @@ const translations = {
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isClosingMobileMenu, setIsClosingMobileMenu] = useState(false);
   const [coursesDropdownOpen, setCoursesDropdownOpen] = useState(false);
+  const [mobileCoursesDropdownOpen, setMobileCoursesDropdownOpen] =
+    useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const { itemCount, setCartOpen } = useCart();
   const { language, setLanguage } = useLanguage();
   const t = translations[language];
   const router = useRouter();
   const pathname = usePathname();
+
+  const handleCloseMobileMenu = () => {
+    setIsClosingMobileMenu(true);
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+      setIsClosingMobileMenu(false);
+    }, 300);
+  };
 
   return (
     <header className="relative z-50">
@@ -316,7 +327,11 @@ export default function Header() {
               {/* Mobile Menu Button */}
               <button
                 className="lg:hidden p-2 hover:bg-primary-50 rounded-full transition-colors"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={() =>
+                  mobileMenuOpen
+                    ? handleCloseMobileMenu()
+                    : setMobileMenuOpen(true)
+                }
               >
                 {mobileMenuOpen ? (
                   <X className="w-6 h-6 text-primary" />
@@ -326,51 +341,186 @@ export default function Header() {
               </button>
             </div>
           </div>
+        </nav>
+      </div>
 
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="lg:hidden border-t border-gray-100 py-4 px-6">
+      {/* Mobile Navigation Drawer */}
+      {mobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className={`fixed inset-0 bg-black/50 z-50 lg:hidden ${
+              isClosingMobileMenu
+                ? "animate-[slide-right_0.3s_ease-out_forwards]"
+                : "animate-[slide-left_0.3s_ease-out]"
+            }`}
+            onClick={handleCloseMobileMenu}
+          />
+
+          {/* Drawer */}
+          <div
+            className={`fixed right-0 top-0 h-full w-full max-w-sm bg-white z-50 shadow-2xl flex flex-col lg:hidden ${
+              isClosingMobileMenu
+                ? "animate-[slide-right_0.3s_ease-out_forwards]"
+                : "animate-[slide-left_0.3s_ease-out]"
+            }`}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <Image
+                src={logo.src}
+                alt="Logo"
+                width={282}
+                height={100}
+                className="w-[100px] h-auto"
+              />
+              <button
+                onClick={handleCloseMobileMenu}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Menu Items */}
+            <div className="flex-1 overflow-y-auto p-6">
               <div className="flex flex-col gap-4">
                 <Link
                   href="/"
-                  className="font-medium text-text-dark hover:text-primary transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className={`font-medium text-lg py-2 border-b border-gray-100 transition-colors ${
+                    pathname === "/"
+                      ? "text-primary"
+                      : "text-gray-800 hover:text-primary"
+                  }`}
+                  onClick={handleCloseMobileMenu}
                 >
                   {t.home}
                 </Link>
-                <Link
-                  href="/courses"
-                  className="font-medium text-text-dark hover:text-primary transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.courses}
-                </Link>
+
+                {/* Courses with dropdown */}
+                <div className="border-b border-gray-100">
+                  <div className="flex items-center justify-between py-2">
+                    <Link
+                      href="/courses"
+                      className={`font-medium text-lg transition-colors ${
+                        pathname.startsWith("/courses")
+                          ? "text-primary"
+                          : "text-gray-800 hover:text-primary"
+                      }`}
+                      onClick={handleCloseMobileMenu}
+                    >
+                      {t.courses}
+                    </Link>
+                    <button
+                      onClick={() =>
+                        setMobileCoursesDropdownOpen(!mobileCoursesDropdownOpen)
+                      }
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <FaChevronDown
+                        className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
+                          mobileCoursesDropdownOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Submenu */}
+                  {mobileCoursesDropdownOpen && (
+                    <div className="pl-4 pb-2 flex flex-col gap-2 animate-[fade-in_0.2s_ease-out]">
+                      <Link
+                        href="/courses"
+                        className="text-gray-600 hover:text-primary transition-colors py-1"
+                        onClick={handleCloseMobileMenu}
+                      >
+                        {t.allCourses}
+                      </Link>
+                      <Link
+                        href="/courses?level=beginner"
+                        className="text-gray-600 hover:text-primary transition-colors py-1"
+                        onClick={handleCloseMobileMenu}
+                      >
+                        {t.beginnerCourses}
+                      </Link>
+                      <Link
+                        href="/courses?level=advanced"
+                        className="text-gray-600 hover:text-primary transition-colors py-1"
+                        onClick={handleCloseMobileMenu}
+                      >
+                        {t.advancedCourses}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
                 <Link
                   href="/about"
-                  className="font-medium text-text-dark hover:text-primary transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className={`font-medium text-lg py-2 border-b border-gray-100 transition-colors ${
+                    pathname === "/about"
+                      ? "text-primary"
+                      : "text-gray-800 hover:text-primary"
+                  }`}
+                  onClick={handleCloseMobileMenu}
                 >
                   {t.aboutUs}
                 </Link>
                 <Link
                   href="/contact"
-                  className="font-medium text-text-dark hover:text-primary transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className={`font-medium text-lg py-2 border-b border-gray-100 transition-colors ${
+                    pathname === "/contact"
+                      ? "text-primary"
+                      : "text-gray-800 hover:text-primary"
+                  }`}
+                  onClick={handleCloseMobileMenu}
                 >
                   {t.contact}
                 </Link>
+              </div>
+
+              {/* Phone */}
+              <div className="mt-8">
                 <a
                   href="tel:+4930123456789"
-                  className="flex items-center gap-2 text-primary font-medium"
+                  className="flex items-center gap-3 text-primary font-medium"
                 >
-                  <FaPhoneAlt className="w-5 h-5" />
+                  <div className="w-10 h-10 bg-primary-100 flex items-center justify-center rounded-full">
+                    <FaPhoneAlt className="w-4 h-4" />
+                  </div>
                   <span>+49 30 123 456 789</span>
                 </a>
               </div>
+
+              {/* Social Icons */}
+              <div className="mt-8 flex items-center gap-4">
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-primary-100 flex items-center justify-center rounded-full text-primary hover:bg-primary hover:text-white transition-colors"
+                >
+                  <FaFacebookF className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-primary-100 flex items-center justify-center rounded-full text-primary hover:bg-primary hover:text-white transition-colors"
+                >
+                  <FaInstagram className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-primary-100 flex items-center justify-center rounded-full text-primary hover:bg-primary hover:text-white transition-colors"
+                >
+                  <FaTwitter className="w-4 h-4" />
+                </a>
+              </div>
             </div>
-          )}
-        </nav>
-      </div>
+          </div>
+        </>
+      )}
 
       {/* Spacer for the overlapping navigation */}
       {/* <div className="h-16"></div> */}
