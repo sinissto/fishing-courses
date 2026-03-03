@@ -216,7 +216,7 @@ export default function Header() {
                 onMouseLeave={() => setCoursesDropdownOpen(false)}
               >
                 <button
-                  className={`h-full flex items-center gap-1 font-medium text-gray-800 hover:text-primary cursor-pointer transition-colors relative ${
+                  className={`h-full w-full flex items-center justify-center gap-1 font-medium text-gray-800 hover:text-primary cursor-pointer transition-colors relative ${
                     pathname.startsWith("/courses") ? "text-primary" : ""
                   }`}
                   // onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
@@ -231,10 +231,10 @@ export default function Header() {
                         : "rotate-0 duration-300"
                     }`}
                   />
-                  {pathname.startsWith("/courses") && (
-                    <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary"></span>
-                  )}
                 </button>
+                {pathname.startsWith("/courses") && (
+                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary"></span>
+                )}
 
                 {coursesDropdownOpen && (
                   <div className="absolute top-full left-0 w-48 bg-primary-darkest  shadow-lg py-2 z-50 animate-[slide-up_0.3s_ease-out]">
