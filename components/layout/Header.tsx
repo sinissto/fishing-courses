@@ -18,6 +18,7 @@ import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
 import Image from "next/image";
 import logo from "@/assets/images/logo/logo.png";
+import { useRouter, usePathname } from "next/navigation";
 
 const translations = {
   en: {
@@ -46,11 +47,13 @@ export default function Header() {
   const { itemCount, setCartOpen } = useCart();
   const { language, setLanguage } = useLanguage();
   const t = translations[language];
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <header className="relative z-50">
       {/* Chyron - Top Bar */}
-      <div className="bg-primary-dark text-white">
+      <div className="bg-primary-darkest text-white">
         <div className="container flex justify-between pt-4 pb-16">
           {/* Left side - Address and Email */}
           <div className="hidden md:flex items-center gap-6 pl-24">
@@ -121,8 +124,8 @@ export default function Header() {
 
       {/* Main Navigation - Overlapping the chyron */}
       <div className="container relative">
-        <nav className="h-[128px] absolute left-4 right-4 lg:left-8 lg:right-8 -top-12 bg-white rounded-lg shadow-lg ">
-          <div className="h-full flex items-center justify-between px-6 py-8 mx-20">
+        <nav className="h-[128px] absolute left-4 right-4 lg:left-8 lg:right-8 -top-12 bg-white rounded-lg shadow-lg flex items-center">
+          <div className="flex-1 flex justify-between items-center h-full mx-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               {/* <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
@@ -142,47 +145,64 @@ export default function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden lg:flex lg:h-full items-center gap-8">
               <Link
                 href="/"
-                className="font-medium hover:text-primary transition-colors"
+                className={`h-full font-medium text-gray-800 hover:text-primary transition-colors px-2 py-3 flex items-center justify-center relative ${
+                  pathname === "/" ? "text-primary" : ""
+                }`}
               >
                 {t.home}
+                {pathname === "/" && (
+                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary"></span>
+                )}
               </Link>
 
               {/* Courses Dropdown */}
-              <div className="relative">
+              <div
+                className="h-full relative flex items-center"
+                onMouseLeave={() => setCoursesDropdownOpen(false)}
+              >
                 <button
-                  className="flex items-center gap-1 font-medium hover:text-primary transition-colors"
-                  onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
+                  className={`h-full flex items-center gap-1 font-medium text-gray-800 hover:text-primary cursor-pointer transition-colors px-2 py-3 relative ${
+                    pathname.startsWith("/courses") ? "text-primary" : ""
+                  }`}
+                  // onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
+                  onClick={() => router.push("/courses")}
                   onMouseEnter={() => setCoursesDropdownOpen(true)}
                 >
                   {t.courses}
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown
+                    className={`w-4 h-4 ${
+                      coursesDropdownOpen
+                        ? "rotate-180 duration-300"
+                        : "rotate-0 duration-300"
+                    }`}
+                  />
+                  {pathname.startsWith("/courses") && (
+                    <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary"></span>
+                  )}
                 </button>
 
                 {coursesDropdownOpen && (
-                  <div
-                    className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
-                    onMouseLeave={() => setCoursesDropdownOpen(false)}
-                  >
+                  <div className="absolute top-full left-0 w-48 bg-primary-darkest  shadow-lg py-2 z-50 animate-[slide-up_0.3s_ease-out]">
                     <Link
                       href="/courses"
-                      className="block px-4 py-2 hover:bg-primary-50 hover:text-primary transition-colors"
+                      className="block px-4 py-2 text-white  hover:text-primary-300 transition-colors"
                       onClick={() => setCoursesDropdownOpen(false)}
                     >
                       {t.allCourses}
                     </Link>
                     <Link
                       href="/courses?level=beginner"
-                      className="block px-4 py-2 hover:bg-primary-50 hover:text-primary transition-colors"
+                      className="block px-4 py-2 text-white hover:text-primary-300 transition-colors"
                       onClick={() => setCoursesDropdownOpen(false)}
                     >
                       {t.beginnerCourses}
                     </Link>
                     <Link
                       href="/courses?level=advanced"
-                      className="block px-4 py-2 hover:bg-primary-50 hover:text-primary transition-colors"
+                      className="block px-4 py-2 text-white hover:text-primary-300 transition-colors"
                       onClick={() => setCoursesDropdownOpen(false)}
                     >
                       {t.advancedCourses}
@@ -193,15 +213,25 @@ export default function Header() {
 
               <Link
                 href="/about"
-                className="font-medium hover:text-primary transition-colors"
+                className={`h-full font-medium text-gray-800 hover:text-primary transition-colors px-2 py-3 flex items-center justify-center relative ${
+                  pathname === "/about" ? "text-primary" : ""
+                }`}
               >
                 {t.aboutUs}
+                {pathname === "/about" && (
+                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary"></span>
+                )}
               </Link>
               <Link
                 href="/contact"
-                className="font-medium hover:text-primary transition-colors"
+                className={`h-full font-medium text-gray-800 hover:text-primary transition-colors px-2 py-3 flex items-center justify-center relative ${
+                  pathname === "/contact" ? "text-primary" : ""
+                }`}
               >
                 {t.contact}
+                {pathname === "/contact" && (
+                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary"></span>
+                )}
               </Link>
             </div>
 
@@ -211,7 +241,13 @@ export default function Header() {
                 href="tel:+4930123456789"
                 className="hidden md:flex items-center gap-2 text-primary font-medium hover:text-primary-dark transition-colors"
               >
-                <Phone className="w-5 h-5" />
+                <div
+                  className={
+                    "w-13 h-13 bg-primary-100 flex items-center justify-center rounded-full group-hover:bg-primary-200 transition-colors"
+                  }
+                >
+                  <Phone className="w-5 h-5  " />
+                </div>
                 <span>+49 30 123 456 789</span>
               </a>
 
@@ -220,9 +256,15 @@ export default function Header() {
                 onClick={() => setCartOpen(true)}
                 className="relative p-2 hover:bg-primary-50 rounded-full transition-colors"
               >
-                <ShoppingCart className="w-6 h-6 text-primary" />
+                <div
+                  className={
+                    "w-13 h-13 bg-primary-100 flex items-center justify-center rounded-full hover:bg-primary-200 transition-colors"
+                  }
+                >
+                  <ShoppingCart className="w-6 h-6 text-primary" />
+                </div>
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-color-accent text-white text-xs rounded-full flex items-center justify-center font-medium">
+                  <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
                     {itemCount}
                   </span>
                 )}
@@ -248,28 +290,28 @@ export default function Header() {
               <div className="flex flex-col gap-4">
                 <Link
                   href="/"
-                  className="font-medium hover:text-primary transition-colors"
+                  className="font-medium text-text-dark hover:text-primary transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t.home}
                 </Link>
                 <Link
                   href="/courses"
-                  className="font-medium hover:text-primary transition-colors"
+                  className="font-medium text-text-dark hover:text-primary transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t.courses}
                 </Link>
                 <Link
                   href="/about"
-                  className="font-medium hover:text-primary transition-colors"
+                  className="font-medium text-text-dark hover:text-primary transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t.aboutUs}
                 </Link>
                 <Link
                   href="/contact"
-                  className="font-medium hover:text-primary transition-colors"
+                  className="font-medium text-text-dark hover:text-primary transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t.contact}
