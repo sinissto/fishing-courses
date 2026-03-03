@@ -2,18 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Menu, X } from "lucide-react";
 import {
-  MapPin,
-  Mail,
-  Phone,
-  ShoppingCart,
-  Menu,
-  X,
-  ChevronDown,
-  Facebook,
-  Instagram,
-  Twitter,
-} from "lucide-react";
+  FaCartArrowDown,
+  FaChevronDown,
+  FaEnvelope,
+  FaFacebookF,
+  FaInstagram,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaTwitter,
+} from "react-icons/fa";
+
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
 import Image from "next/image";
@@ -44,6 +44,7 @@ const translations = {
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [coursesDropdownOpen, setCoursesDropdownOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const { itemCount, setCartOpen } = useCart();
   const { language, setLanguage } = useLanguage();
   const t = translations[language];
@@ -63,14 +64,14 @@ export default function Header() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-[16px]/[26px] hover:text-primary-light transition-colors"
             >
-              <MapPin className="w-4 h-4" />
+              <FaMapMarkerAlt className="w-4 h-4" />
               <span>Musterstraße 123, 81505 München</span>
             </a>
             <a
               href="mailto:info@angelschein-kurse.de"
               className="flex items-center gap-2 text-[16px]/[26px] hover:text-primary-light transition-colors"
             >
-              <Mail className="w-4 h-4" />
+              <FaEnvelope className="w-4 h-4" />
               <span>info@angelschein-kurse.de</span>
             </a>
           </div>
@@ -78,18 +79,58 @@ export default function Header() {
           {/* Right side - Language selector and Social icons */}
           <div className="flex items-center gap-4 ml-auto pr-24">
             {/* Language Selector */}
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as "en" | "de")}
-              className="bg-transparent border border-white/30 rounded px-2 py-1 text-sm cursor-pointer hover:border-white transition-colors"
-            >
-              <option value="de" className="text-black">
-                Deutsch
-              </option>
-              <option value="en" className="text-black">
-                English
-              </option>
-            </select>
+            {/*<select*/}
+            {/*  value={language}*/}
+            {/*  onChange={(e) => setLanguage(e.target.value as "en" | "de")}*/}
+            {/*  className="bg-transparent border border-white/30 rounded px-2 py-1 text-sm cursor-pointer hover:border-white transition-colors"*/}
+            {/*>*/}
+            {/*  <option value="de" className="text-black">*/}
+            {/*    Deutsch*/}
+            {/*  </option>*/}
+            {/*  <option value="en" className="text-black">*/}
+            {/*    English*/}
+            {/*  </option>*/}
+            {/*</select>*/}
+
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className="bg-transparent border border-white/30 rounded px-2 py-1 text-sm cursor-pointer hover:border-white transition-colors flex items-center gap-1"
+              >
+                {language === "de" ? "Deutsch" : "English"}
+                <FaChevronDown
+                  className={`w-3 h-3 ${
+                    langOpen ? "rotate-180" : ""
+                  } transition-transform`}
+                />
+              </button>
+
+              {langOpen && (
+                <div
+                  className="absolute top-full left-0 mt-1 bg-primary-darkest text-white shadow-lg rounded py-1 min-w-full z-50"
+                  onMouseLeave={() => setLangOpen(false)}
+                >
+                  <button
+                    onClick={() => {
+                      setLanguage("de");
+                      setLangOpen(false);
+                    }}
+                    className="block w-full text-left px-3 py-1.5 text-sm text-white hover:text-primary-300 cursor-pointer"
+                  >
+                    Deutsch
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLanguage("en");
+                      setLangOpen(false);
+                    }}
+                    className="block w-full text-left px-3 py-1.5 text-sm text-white hover:text-primary-300 cursor-pointer"
+                  >
+                    English
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Social Icons */}
             <div className="flex items-center gap-3">
@@ -99,7 +140,7 @@ export default function Header() {
                 rel="noopener noreferrer"
                 className="hover:text-primary-light transition-colors"
               >
-                <Facebook className="w-4 h-4" />
+                <FaFacebookF className="w-4 h-4" />
               </a>
               <a
                 href="https://instagram.com"
@@ -107,7 +148,7 @@ export default function Header() {
                 rel="noopener noreferrer"
                 className="hover:text-primary-light transition-colors"
               >
-                <Instagram className="w-4 h-4" />
+                <FaInstagram className="w-4 h-4" />
               </a>
               <a
                 href="https://twitter.com"
@@ -115,7 +156,7 @@ export default function Header() {
                 rel="noopener noreferrer"
                 className="hover:text-primary-light transition-colors"
               >
-                <Twitter className="w-4 h-4" />
+                <FaTwitter className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -172,7 +213,7 @@ export default function Header() {
                   onMouseEnter={() => setCoursesDropdownOpen(true)}
                 >
                   {t.courses}
-                  <ChevronDown
+                  <FaChevronDown
                     className={`w-4 h-4 ${
                       coursesDropdownOpen
                         ? "rotate-180 duration-300"
@@ -246,7 +287,7 @@ export default function Header() {
                     "w-13 h-13 bg-primary-100 flex items-center justify-center rounded-full group-hover:bg-primary-200 transition-colors"
                   }
                 >
-                  <Phone className="w-5 h-5  " />
+                  <FaPhoneAlt className="w-5 h-5  " />
                 </div>
                 <span>+49 30 123 456 789</span>
               </a>
@@ -254,14 +295,14 @@ export default function Header() {
               {/* Cart Button */}
               <button
                 onClick={() => setCartOpen(true)}
-                className="relative p-2 hover:bg-primary-50 rounded-full transition-colors"
+                className="relative p-2 hover:bg-primary-50 rounded-full transition-colors group cursor-pointer"
               >
                 <div
                   className={
-                    "w-13 h-13 bg-primary-100 flex items-center justify-center rounded-full hover:bg-primary-200 transition-colors"
+                    "w-13 h-13 bg-primary-100 flex items-center justify-center rounded-full group-hover:text-primary-dark transition-colors"
                   }
                 >
-                  <ShoppingCart className="w-6 h-6 text-primary" />
+                  <FaCartArrowDown className="w-6 h-6 text-primary group-hover:text-primary-dark" />
                 </div>
                 {itemCount > 0 && (
                   <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
@@ -320,7 +361,7 @@ export default function Header() {
                   href="tel:+4930123456789"
                   className="flex items-center gap-2 text-primary font-medium"
                 >
-                  <Phone className="w-5 h-5" />
+                  <FaPhoneAlt className="w-5 h-5" />
                   <span>+49 30 123 456 789</span>
                 </a>
               </div>
