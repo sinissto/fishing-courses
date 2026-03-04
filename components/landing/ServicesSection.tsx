@@ -3,89 +3,88 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ChevronLeft,
-  ChevronRight,
-  BookOpen,
-  Users,
-  Award,
-  Fish,
-  Compass,
-  Clock,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+
+import srImg1 from "@/assets/images/services/sr-1-1.png";
+import srImg2 from "@/assets/images/services/sr-1-2.png";
+import srImg3 from "@/assets/images/services/sr-1-3.png";
+import srImg4 from "@/assets/images/services/sr-1-4.png";
+import srImg5 from "@/assets/images/services/sr-1-5.png";
+import srImg6 from "@/assets/images/services/sr-1-6.png";
+
+import srIcon1 from "@/assets/images/services/sr-1-1.svg";
+import srIcon2 from "@/assets/images/services/sr-1-2.svg";
+import srIcon3 from "@/assets/images/services/sr-1-3.svg";
+import srIcon4 from "@/assets/images/services/sr-1-4.svg";
+import srIcon5 from "@/assets/images/services/sr-1-5.svg";
+import srIcon6 from "@/assets/images/services/sr-1-6.svg";
 
 const services = [
   {
-    icon: BookOpen,
+    icon: srIcon1.src,
     title: "Exam Preparation",
     titleDe: "Prüfungsvorbereitung",
     description:
       "Comprehensive study materials and practice tests to ensure you pass your fishing license exam.",
     descriptionDe:
       "Umfassende Lernmaterialien und Übungstests, um Ihre Fischerprüfung zu bestehen.",
-    image:
-      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&h=400&fit=crop",
+    image: srImg1.src,
     link: "/courses",
   },
   {
-    icon: Users,
+    icon: srIcon2.src,
     title: "Group Courses",
     titleDe: "Gruppenkurse",
     description:
       "Learn together with other fishing enthusiasts in our interactive group sessions.",
     descriptionDe:
       "Lernen Sie gemeinsam mit anderen Angel-Enthusiasten in unseren interaktiven Gruppensitzungen.",
-    image:
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop",
+    image: srImg2.src,
     link: "/courses",
   },
   {
-    icon: Award,
+    icon: srIcon3.src,
     title: "Certification",
     titleDe: "Zertifizierung",
     description:
       "Receive official certification upon completing our courses, recognized throughout Germany.",
     descriptionDe:
       "Erhalten Sie nach Abschluss unserer Kurse eine offizielle Zertifizierung, die deutschlandweit anerkannt ist.",
-    image:
-      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=400&fit=crop",
+    image: srImg3.src,
     link: "/about",
   },
   {
-    icon: Fish,
+    icon: srIcon4.src,
     title: "Practical Training",
     titleDe: "Praktisches Training",
     description:
       "Hands-on fishing experience at beautiful lakes and rivers across Germany.",
     descriptionDe:
       "Praktische Angelerfahrung an wunderschönen Seen und Flüssen in ganz Deutschland.",
-    image:
-      "https://images.unsplash.com/photo-1545816250-e12bedba42ba?w=600&h=400&fit=crop",
+    image: srImg4.src,
     link: "/courses",
   },
   {
-    icon: Compass,
+    icon: srIcon5.src,
     title: "Guided Tours",
     titleDe: "Geführte Touren",
     description:
       "Explore the best fishing spots with our experienced guides and local experts.",
     descriptionDe:
       "Erkunden Sie die besten Angelplätze mit unseren erfahrenen Guides und lokalen Experten.",
-    image:
-      "https://images.unsplash.com/photo-1504472478235-9bc48ba4d60f?w=600&h=400&fit=crop",
+    image: srImg5.src,
     link: "/courses",
   },
   {
-    icon: Clock,
+    icon: srIcon6.src,
     title: "Flexible Scheduling",
     titleDe: "Flexible Terminplanung",
     description:
       "Choose from weekday, weekend, or online courses that fit your schedule.",
     descriptionDe:
       "Wählen Sie aus Wochentags-, Wochenend- oder Online-Kursen, die in Ihren Zeitplan passen.",
-    image:
-      "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&h=400&fit=crop",
+    image: srImg6.src,
     link: "/courses",
   },
 ];
@@ -206,13 +205,12 @@ export default function ServicesSection() {
             onMouseLeave={handleMouseLeave}
           >
             {services.map((service, index) => {
-              const Icon = service.icon;
               return (
                 <div
                   key={index}
-                  className="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] card group select-none snap-start"
+                  className="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] card group hover:bg-primary select-none snap-start"
                 >
-                  {/* Image with Overlapping Icon */}
+                  {/* Image */}
                   <div className="relative h-48 overflow-hidden rounded-t-lg">
                     <Image
                       src={service.image}
@@ -221,29 +219,54 @@ export default function ServicesSection() {
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                       draggable={false}
                     />
-                    <div className="absolute -bottom-6 left-6 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                      <Icon className="w-6 h-6 text-white" />
+                  </div>
+
+                  {/* Icon - Centered, overlapping image and content */}
+                  <div className="relative z-10 flex justify-center -mt-16 [perspective:1000px]">
+                    <div className="w-24 h-24 relative [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateY(180deg)]">
+                      {/* Front face - white background, colored icon */}
+                      <div className="absolute inset-0 bg-white rounded-full flex items-center justify-center shadow-lg [backface-visibility:hidden]">
+                        <Image
+                          src={service.icon}
+                          alt="service icon"
+                          width={40}
+                          height={40}
+                          className="w-10 h-10"
+                        />
+                      </div>
+                      {/* Back face - primary background, white icon (mirrored) */}
+                      <div className="absolute inset-0 bg-primary rounded-full flex items-center justify-center shadow-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                        <Image
+                          src={service.icon}
+                          alt="service icon"
+                          width={40}
+                          height={40}
+                          className="w-10 h-10 brightness-0 invert group-hover:[transform:rotateY(180deg)] duration-500"
+                        />
+                      </div>
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-6 pt-10">
-                    <h3 className="text-xl font-bold mb-3">
+                  <div className="p-6 pt-4">
+                    <h3 className="text-xl font-bold mb-3 text-center group-hover:text-white transition-colors">
                       {language === "de" ? service.titleDe : service.title}
                     </h3>
-                    <p className="text-text-light mb-4 text-sm leading-relaxed">
+                    <p className="text-text-light mb-4 text-sm leading-relaxed text-center group-hover:text-white transition-colors">
                       {language === "de"
                         ? service.descriptionDe
                         : service.description}
                     </p>
-                    <Link
-                      href={service.link}
-                      className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
-                      onClick={(e) => isDragging && e.preventDefault()}
-                    >
-                      {t.readMore}
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
+                    <div className="flex justify-center">
+                      <Link
+                        href={service.link}
+                        className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 group-hover:text-white transition-all"
+                        onClick={(e) => isDragging && e.preventDefault()}
+                      >
+                        {t.readMore}
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               );
