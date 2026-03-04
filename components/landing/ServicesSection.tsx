@@ -170,7 +170,7 @@ export default function ServicesSection() {
   };
 
   return (
-    <section className="section-padding bg-[var(--color-bg-light)]">
+    <section className="section-padding bg-bg-light">
       <div className="container">
         {/* Header */}
         <div className="text-center mb-12">
@@ -184,9 +184,9 @@ export default function ServicesSection() {
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            className={`flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all ${
+            className={`shrink-0 text-primary w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all border-2 border-primary ${
               canScrollLeft
-                ? "opacity-100 hover:bg-[var(--color-primary)] hover:text-white cursor-pointer"
+                ? "opacity-100 hover:bg-primary hover:text-white cursor-pointer"
                 : "opacity-30 cursor-not-allowed"
             }`}
           >
@@ -210,7 +210,7 @@ export default function ServicesSection() {
               return (
                 <div
                   key={index}
-                  className="flex-shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] card group select-none snap-start"
+                  className="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] card group select-none snap-start"
                 >
                   {/* Image with Overlapping Icon */}
                   <div className="relative h-48 overflow-hidden rounded-t-lg">
@@ -221,7 +221,7 @@ export default function ServicesSection() {
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                       draggable={false}
                     />
-                    <div className="absolute -bottom-6 left-6 w-12 h-12 bg-[var(--color-primary)] rounded-full flex items-center justify-center shadow-lg">
+                    <div className="absolute -bottom-6 left-6 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                   </div>
@@ -231,14 +231,14 @@ export default function ServicesSection() {
                     <h3 className="text-xl font-bold mb-3">
                       {language === "de" ? service.titleDe : service.title}
                     </h3>
-                    <p className="text-[var(--color-text-light)] mb-4 text-sm leading-relaxed">
+                    <p className="text-text-light mb-4 text-sm leading-relaxed">
                       {language === "de"
                         ? service.descriptionDe
                         : service.description}
                     </p>
                     <Link
                       href={service.link}
-                      className="inline-flex items-center gap-2 text-[var(--color-primary)] font-medium hover:gap-3 transition-all"
+                      className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
                       onClick={(e) => isDragging && e.preventDefault()}
                     >
                       {t.readMore}
@@ -249,16 +249,16 @@ export default function ServicesSection() {
               );
             })}
             {/* Spacer to prevent last card from being cut off */}
-            <div className="flex-shrink-0 w-4"></div>
+            {/*<div className="shrink-0 w-4"></div>*/}
           </div>
 
           {/* Right Navigation Button */}
           <button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
-            className={`flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all ${
+            className={`shrink-0 text-primary w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all border-2 border-primary ${
               canScrollRight
-                ? "opacity-100 hover:bg-[var(--color-primary)] hover:text-white cursor-pointer"
+                ? "opacity-100 hover:bg-primary hover:text-white cursor-pointer"
                 : "opacity-30 cursor-not-allowed"
             }`}
           >
