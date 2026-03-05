@@ -114,6 +114,9 @@ export default function ServicesSection() {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
+  // Autoplay state
+  const [isHovering, setIsHovering] = useState(false);
+
   const checkScrollButtons = () => {
     if (carouselRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
@@ -130,6 +133,31 @@ export default function ServicesSection() {
       return () => carousel.removeEventListener("scroll", checkScrollButtons);
     }
   }, []);
+
+  // Autoplay effect - scroll one card at a time
+  useEffect(() => {
+    if (isHovering || isDragging) return;
+
+    const interval = setInterval(() => {
+      if (carouselRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+        const firstCard = carouselRef.current.querySelector(
+          ".card"
+        ) as HTMLElement;
+        const cardWidth = firstCard ? firstCard.offsetWidth + 24 : 340; // card width + gap
+
+        // If at the end, scroll back to beginning
+        if (scrollLeft >= scrollWidth - clientWidth - 10) {
+          carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          // Scroll one card to the left
+          carouselRef.current.scrollBy({ left: cardWidth, behavior: "smooth" });
+        }
+      }
+    }, 4000); // Every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [isHovering, isDragging]);
 
   const scroll = (direction: "left" | "right") => {
     if (carouselRef.current) {
@@ -164,8 +192,13 @@ export default function ServicesSection() {
     setIsDragging(false);
   };
 
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
   const handleMouseLeave = () => {
     setIsDragging(false);
+    setIsHovering(false);
   };
 
   return (
@@ -177,6 +210,7 @@ export default function ServicesSection() {
           <h2 className="heading">{t.heading}</h2>
         </div>
 
+        {/* TODO: use Swiper here, less pain in the ass */}
         {/* Carousel Container with Navigation */}
         <div className="flex items-center gap-4">
           {/* Left Navigation Button */}
@@ -195,13 +229,16 @@ export default function ServicesSection() {
           {/* Carousel */}
           <div
             ref={carouselRef}
-            className={`flex-1 flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory py-4 ${
-              isDragging ? "cursor-grabbing" : "cursor-grab"
+            className={`flex-1 flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory py-4 ${
+              isDragging
+                ? "cursor-grabbing scroll-auto"
+                : "cursor-grab scroll-smooth"
             }`}
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             {services.map((service, index) => {
