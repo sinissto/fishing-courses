@@ -65,17 +65,17 @@ const services = [
     image: srImg4.src,
     link: "/courses",
   },
-  {
-    icon: srIcon5.src,
-    title: "Guided Tours",
-    titleDe: "Geführte Touren",
-    description:
-      "Explore the best fishing spots with our experienced guides and local experts.",
-    descriptionDe:
-      "Erkunden Sie die besten Angelplätze mit unseren erfahrenen Guides und lokalen Experten.",
-    image: srImg5.src,
-    link: "/courses",
-  },
+  // {
+  //   icon: srIcon5.src,
+  //   title: "Guided Tours",
+  //   titleDe: "Geführte Touren",
+  //   description:
+  //     "Explore the best fishing spots with our experienced guides and local experts.",
+  //   descriptionDe:
+  //     "Erkunden Sie die besten Angelplätze mit unseren erfahrenen Guides und lokalen Experten.",
+  //   image: srImg5.src,
+  //   link: "/courses",
+  // },
   {
     icon: srIcon6.src,
     title: "Flexible Scheduling",
