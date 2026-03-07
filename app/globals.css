@@ -274,3 +274,55 @@ img {
   transform: translateY(-4px);
   background-color: var(--color-primary);
 }
+
+/* In `styles/globals.css` (or your global Tailwind/CSS file) - override Swiper defaults */
+
+/* Ensure the external container isn't absolutely positioned and center bullets */
+.services-pagination.swiper-pagination {
+  position: static !important;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Small styling for bullets (adjust sizes/colors as needed) */
+.services-pagination .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0.7;
+  margin: 0 6px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.services-pagination .swiper-pagination-bullet-active {
+  background: var(--color-primary, #0077b6); /* or your primary color */
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Swiper equal height slides and visible shadows */
+.swiper-wrapper {
+  align-items: stretch !important;
+}
+
+.swiper-slide {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* When card class is on SwiperSlide itself */
+.swiper-slide.card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+.swiper-slide > .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}

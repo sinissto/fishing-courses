@@ -19,6 +19,11 @@ import srIcon3 from "@/assets/images/services/sr-1-3.svg";
 import srIcon4 from "@/assets/images/services/sr-1-4.svg";
 import srIcon5 from "@/assets/images/services/sr-1-5.svg";
 import srIcon6 from "@/assets/images/services/sr-1-6.svg";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 const services = [
   {
@@ -65,17 +70,17 @@ const services = [
     image: srImg4.src,
     link: "/courses",
   },
-  // {
-  //   icon: srIcon5.src,
-  //   title: "Guided Tours",
-  //   titleDe: "Geführte Touren",
-  //   description:
-  //     "Explore the best fishing spots with our experienced guides and local experts.",
-  //   descriptionDe:
-  //     "Erkunden Sie die besten Angelplätze mit unseren erfahrenen Guides und lokalen Experten.",
-  //   image: srImg5.src,
-  //   link: "/courses",
-  // },
+  {
+    icon: srIcon5.src,
+    title: "Guided Tours",
+    titleDe: "Geführte Touren",
+    description:
+      "Explore the best fishing spots with our experienced guides and local experts.",
+    descriptionDe:
+      "Erkunden Sie die besten Angelplätze mit unseren erfahrenen Guides und lokalen Experten.",
+    image: srImg5.src,
+    link: "/courses",
+  },
   {
     icon: srIcon6.src,
     title: "Flexible Scheduling",
@@ -105,101 +110,6 @@ const translations = {
 export default function ServicesSection() {
   const { language } = useLanguage();
   const t = translations[language];
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  // Mouse drag state
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-
-  // Autoplay state
-  const [isHovering, setIsHovering] = useState(false);
-
-  const checkScrollButtons = () => {
-    if (carouselRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
-
-  useEffect(() => {
-    checkScrollButtons();
-    const carousel = carouselRef.current;
-    if (carousel) {
-      carousel.addEventListener("scroll", checkScrollButtons);
-      return () => carousel.removeEventListener("scroll", checkScrollButtons);
-    }
-  }, []);
-
-  // Autoplay effect - scroll one card at a time
-  useEffect(() => {
-    if (isHovering || isDragging) return;
-
-    const interval = setInterval(() => {
-      if (carouselRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-        const firstCard = carouselRef.current.querySelector(
-          ".card"
-        ) as HTMLElement;
-        const cardWidth = firstCard ? firstCard.offsetWidth + 24 : 340; // card width + gap
-
-        // If at the end, scroll back to beginning
-        if (scrollLeft >= scrollWidth - clientWidth - 10) {
-          carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          // Scroll one card to the left
-          carouselRef.current.scrollBy({ left: cardWidth, behavior: "smooth" });
-        }
-      }
-    }, 4000); // Every 4 seconds
-
-    return () => clearInterval(interval);
-  }, [isHovering, isDragging]);
-
-  const scroll = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const firstCard = carouselRef.current.querySelector(
-        ".card"
-      ) as HTMLElement;
-      const scrollAmount = firstCard ? firstCard.offsetWidth + 24 : 340; // card width + gap
-      carouselRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // Mouse drag handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!carouselRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - carouselRef.current.offsetLeft);
-    setScrollLeft(carouselRef.current.scrollLeft);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !carouselRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - carouselRef.current.offsetLeft;
-    const walk = (x - startX) * 1.5;
-    carouselRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-    setIsHovering(false);
-  };
 
   return (
     <section className="section-padding bg-bg-light">
@@ -210,121 +120,142 @@ export default function ServicesSection() {
           <h2 className="heading">{t.heading}</h2>
         </div>
 
-        {/* TODO: use Swiper here, less pain in the ass */}
-        {/* Carousel Container with Navigation */}
         <div className="flex items-center gap-4">
           {/* Left Navigation Button */}
           <button
-            onClick={() => scroll("left")}
-            disabled={!canScrollLeft}
-            className={`shrink-0 text-primary w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all border-2 border-primary ${
-              canScrollLeft
-                ? "opacity-100 hover:bg-primary hover:text-white cursor-pointer"
-                : "opacity-30 cursor-not-allowed"
-            }`}
+            // onClick={() => scroll("left")}
+            // disabled={!canScrollLeft}
+            className={`testimonial-prev shrink-0 text-primary w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all border-2 border-primary hover:bg-primary hover:text-white cursor-pointer`}
           >
             <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
           </button>
 
-          {/* Carousel */}
-          <div
-            ref={carouselRef}
-            className={`flex-1 flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory py-4 ${
-              isDragging
-                ? "cursor-grabbing scroll-auto"
-                : "cursor-grab scroll-smooth"
-            }`}
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+          {/* swiper */}
+          <Swiper
+            modules={[Pagination, Autoplay, Navigation]}
+            spaceBetween={30}
+            slidesPerView={1}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+              1280: { slidesPerView: 4 },
+            }}
+            centeredSlides={false}
+            pagination={{
+              el: ".services-pagination", // <- render bullets into this external container
+              clickable: true,
+              dynamicBullets: false,
+            }}
+            navigation={{
+              prevEl: ".testimonial-prev",
+              nextEl: ".testimonial-next",
+            }}
+            autoplay={{
+              delay: 6000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={true}
+            allowTouchMove={true}
+            simulateTouch={true}
+            grabCursor={true}
+            touchRatio={1}
+            touchAngle={45}
+            className="pb-4!"
           >
             {services.map((service, index) => {
               return (
-                <div
+                <SwiperSlide
                   key={index}
-                  className="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] card group hover:bg-primary select-none snap-start"
+                  className="card group hover:bg-primary select-none"
+                  style={{ height: "auto", alignSelf: "stretch" }}
                 >
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden rounded-t-lg">
-                    <Image
-                      src={service.image}
-                      alt={language === "de" ? service.titleDe : service.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      draggable={false}
-                    />
-                  </div>
+                  <div className="flex flex-col h-full">
+                    {/* Image */}
+                    <div className="relative h-48 overflow-hidden rounded-t-lg">
+                      <Image
+                        src={service.image}
+                        alt={
+                          language === "de" ? service.titleDe : service.title
+                        }
+                        width={416}
+                        height={294}
+                        className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
+                        draggable={false}
+                      />
+                    </div>
 
-                  {/* Icon - Centered, overlapping image and content */}
-                  <div className="relative z-10 flex justify-center -mt-16 [perspective:1000px]">
-                    <div className="w-24 h-24 relative [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateY(180deg)]">
-                      {/* Front face - white background, colored icon */}
-                      <div className="absolute inset-0 bg-white rounded-full flex items-center justify-center shadow-lg [backface-visibility:hidden]">
-                        <Image
-                          src={service.icon}
-                          alt="service icon"
-                          width={40}
-                          height={40}
-                          className="w-10 h-10"
-                        />
+                    {/* Icon - Centered, overlapping image and content */}
+                    <div className="relative z-10 flex justify-center -mt-16 [perspective:1000px]">
+                      <div className="w-24 h-24 relative [transform-style:preserve-3d] transition-transform duration-500 group-hover:[transform:rotateY(180deg)]">
+                        {/* Front face - white background, colored icon */}
+                        <div className="absolute inset-0 bg-white rounded-full flex items-center justify-center shadow-lg [backface-visibility:hidden]">
+                          <Image
+                            src={service.icon}
+                            alt="service icon"
+                            width={40}
+                            height={40}
+                            unoptimized={true}
+                            className="w-10 h-10"
+                          />
+                        </div>
+                        {/* Back face - primary background, white icon (mirrored) */}
+                        <div className="absolute inset-0 bg-primary rounded-full flex items-center justify-center shadow-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                          <Image
+                            src={service.icon}
+                            alt="service icon"
+                            width={40}
+                            height={40}
+                            unoptimized={true}
+                            className="w-10 h-10 brightness-0 invert group-hover:[transform:rotateY(180deg)] duration-500"
+                          />
+                        </div>
                       </div>
-                      {/* Back face - primary background, white icon (mirrored) */}
-                      <div className="absolute inset-0 bg-primary rounded-full flex items-center justify-center shadow-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                        <Image
-                          src={service.icon}
-                          alt="service icon"
-                          width={40}
-                          height={40}
-                          className="w-10 h-10 brightness-0 invert group-hover:[transform:rotateY(180deg)] duration-500"
-                        />
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 pt-4 flex-1 flex flex-col justify-between min-h-[180px]">
+                      <div>
+                        <h3 className="text-xl font-bold mb-3 text-center group-hover:text-white transition-colors">
+                          {language === "de" ? service.titleDe : service.title}
+                        </h3>
+                        <p className="text-text-light mb-4 text-sm leading-relaxed text-center group-hover:text-white transition-colors">
+                          {language === "de"
+                            ? service.descriptionDe
+                            : service.description}
+                        </p>
+                      </div>
+                      {/* Button always at the bottom */}
+                      <div className="flex justify-center">
+                        <Link
+                          href={service.link}
+                          className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 group-hover:text-white transition-all"
+                        >
+                          {t.readMore}
+                          <ChevronRight className="w-4 h-4" />
+                        </Link>
                       </div>
                     </div>
                   </div>
-
-                  {/* Content */}
-                  <div className="p-6 pt-4">
-                    <h3 className="text-xl font-bold mb-3 text-center group-hover:text-white transition-colors">
-                      {language === "de" ? service.titleDe : service.title}
-                    </h3>
-                    <p className="text-text-light mb-4 text-sm leading-relaxed text-center group-hover:text-white transition-colors">
-                      {language === "de"
-                        ? service.descriptionDe
-                        : service.description}
-                    </p>
-                    <div className="flex justify-center">
-                      <Link
-                        href={service.link}
-                        className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 group-hover:text-white transition-all"
-                        onClick={(e) => isDragging && e.preventDefault()}
-                      >
-                        {t.readMore}
-                        <ChevronRight className="w-4 h-4" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                </SwiperSlide>
               );
             })}
-            {/* Spacer to prevent last card from being cut off */}
-            {/*<div className="shrink-0 w-4"></div>*/}
-          </div>
+          </Swiper>
 
-          {/* Right Navigation Button */}
+          {/* button right */}
           <button
-            onClick={() => scroll("right")}
-            disabled={!canScrollRight}
-            className={`shrink-0 text-primary w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all border-2 border-primary ${
-              canScrollRight
-                ? "opacity-100 hover:bg-primary hover:text-white cursor-pointer"
-                : "opacity-30 cursor-not-allowed"
-            }`}
+            // onClick={() => scroll("right")}
+            // disabled={!canScrollRight}
+            className={
+              "testimonial-next shrink-0 text-primary w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all border-2 border-primary hover:bg-primary hover:text-white cursor-pointer"
+            }
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
         </div>
+
+        {/* Pagination - placed OUTSIDE the flex row, below the Swiper */}
+        <div className="services-pagination mt-6 flex justify-center" />
       </div>
     </section>
   );
