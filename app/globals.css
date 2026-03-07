@@ -98,6 +98,12 @@
       transform: translateY(-20px);
     }
   }
+
+  @keyframes rotate {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 /* * {
