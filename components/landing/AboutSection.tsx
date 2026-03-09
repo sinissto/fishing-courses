@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-import aboutImg1 from "@/assets/images/about/exp-1-12.png";
+import aboutImg1 from "@/assets/images/about/exp-1-1.png";
 import aboutImg2 from "@/assets/images/about/exp-1-2.png";
 import aboutImgBg from "@/assets/images/about/explore-shape1.png";
 
