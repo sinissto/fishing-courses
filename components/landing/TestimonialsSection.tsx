@@ -316,7 +316,7 @@ export default function TestimonialsSection() {
 
           {/* Center Pagination - Absolutely Positioned */}
           {/* className = hidden lg:flex flex-col gap-4 items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 */}
-          <div className="testimonialPagination absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ">
+          <div className="testimonialPagination hidden lg:flex lg:flex-col absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ">
             {/*<div className="relative h-[260px] overflow-hidden">*/}
             {/*  /!* Pagination track *!/*/}
             <div
@@ -356,26 +356,26 @@ export default function TestimonialsSection() {
           </div>
 
           {/* Mobile Pagination */}
-          {/*<div className="flex lg:hidden justify-center gap-3 pb-8 px-2">*/}
-          {/*  {paginationImages.map((img, index) => (*/}
-          {/*    <button*/}
-          {/*      key={index}*/}
-          {/*      onClick={() => handlePaginationClick(index)}*/}
-          {/*      className={`relative w-12 h-12 rounded-full transition-all duration-300 ${*/}
-          {/*        index === activeIndex*/}
-          {/*          ? "ring-4 ring-[var(--color-primary)] scale-110"*/}
-          {/*          : "hover:scale-105"*/}
-          {/*      }`}*/}
-          {/*    >*/}
-          {/*      <Image*/}
-          {/*        src={img}*/}
-          {/*        alt={`Testimonial ${index + 1}`}*/}
-          {/*        fill*/}
-          {/*        className="object-cover rounded-full"*/}
-          {/*      />*/}
-          {/*    </button>*/}
-          {/*  ))}*/}
-          {/*</div>*/}
+          <div className="flex lg:hidden justify-center gap-3 pb-8 px-2 absolute top-[56%] md:top-[59%]  left-1/2 -translate-x-1/2 z-20">
+            {pagination.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => handlePaginationClick(index)}
+                className={`relative w-12 h-12 rounded-full transition-all duration-300 ${
+                  index === activeIndex
+                    ? "ring-4 ring-[var(--color-primary)] scale-110"
+                    : "hover:scale-105"
+                }`}
+              >
+                <Image
+                  src={img.image}
+                  alt={`Testimonial ${index + 1}`}
+                  fill
+                  className="object-cover rounded-full"
+                />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>
