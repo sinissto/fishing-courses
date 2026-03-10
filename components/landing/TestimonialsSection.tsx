@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Star, Quote } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -101,13 +101,6 @@ const testimonials: Testimonial[] = [
 ];
 
 const rightImages = [rightImg1, rightImg2, rightImg3, rightImg4, rightImg5];
-// const paginationImages = [
-//   paginationImg1,
-//   paginationImg2,
-//   paginationImg3,
-//   paginationImg4,
-//   paginationImg5,
-// ];
 
 const translations = {
   en: {
@@ -120,31 +113,30 @@ const translations = {
   },
 };
 
-const ITEM_HEIGHT = 80; // 70px image + 12px gap
-
-function rotateSlides(slides: Testimonial[], activeIndex: number) {
-  const before = slides.slice(0, activeIndex);
-  const after = slides.slice(activeIndex);
-
-  return [...before.slice(-1), ...after, ...before.slice(0, -1)];
-}
+const ITEM_HEIGHT = 84; // 68px thumb + 16px gap
+const VISIBLE_COUNT = 4;
+// Active item sits at position index 1 (second from top)
+const ACTIVE_POSITION = 1;
 
 function circularIndex(index: number, length: number) {
   return ((index % length) + length) % length;
 }
 
-function getPaginationWindow(
-  slides: Testimonial[],
-  activeIndex: number,
-  size = 5
-) {
-  const half = Math.floor(size / 2);
-
-  return Array.from({ length: size }, (_, i) => {
-    const offset = i - half;
-    const index = circularIndex(activeIndex + offset, slides.length);
-    return { ...slides[index], realIndex: index };
-  });
+/**
+ * Build an initial track long enough so that we can scroll
+ * smoothly in both directions without ever running out of items.
+ * We place the first active slide at ACTIVE_POSITION inside the track
+ * and pad generously before and after.
+ */
+function buildInitialTrack(startIndex: number) {
+  const PAD = 3;
+  const TOTAL = PAD + VISIBLE_COUNT + PAD;
+  const items: number[] = [];
+  const firstIndex = startIndex - ACTIVE_POSITION - PAD;
+  for (let i = 0; i < TOTAL; i++) {
+    items.push(circularIndex(firstIndex + i, testimonials.length));
+  }
+  return { items, activeTrackPos: PAD + ACTIVE_POSITION };
 }
 
 export default function TestimonialsSection() {
@@ -154,51 +146,145 @@ export default function TestimonialsSection() {
   const [leftSwiper, setLeftSwiper] = useState<SwiperType | null>(null);
   const [rightSwiper, setRightSwiper] = useState<SwiperType | null>(null);
 
-  // const paginationSlides = [
-  //   ...testimonials.slice(-2),
-  //   ...testimonials,
-  //   ...testimonials.slice(0, 2),
-  // ];
+  // Track state: list of real indices and the position of the active item
+  const [track, setTrack] = useState(() => buildInitialTrack(0));
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
+  const prevActiveRef = useRef(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const backwardStepsRef = useRef(0);
+  const trimTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Visual active index – updated mid-transition so the ring moves with the scroll
+  const [displayActiveIndex, setDisplayActiveIndex] = useState(0);
+  const displayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // const pagination = useMemo(
-  //   () => rotateSlides(testimonials, activeIndex),
-  //   [activeIndex]
-  // );
+  // Maximum items to keep in the track before trimming
+  const MAX_TRACK_SIZE = 20;
 
-  const pagination = useMemo(
-    () => getPaginationWindow(testimonials, activeIndex),
-    [activeIndex]
-  );
+  // Trim silently between transitions – called via a delayed timeout
+  // so we never interfere with an ongoing CSS transition.
+  const scheduleTrim = () => {
+    if (trimTimeoutRef.current) clearTimeout(trimTimeoutRef.current);
+    trimTimeoutRef.current = setTimeout(() => {
+      // 1. Disable transition
+      setTransitionEnabled(false);
+      // 2. Slice the array + adjust activeTrackPos in one render
+      setTrack((old) => {
+        if (old.items.length <= MAX_TRACK_SIZE) return old; // nothing to trim
+        const BUFFER = 3;
+        const keepStart = Math.max(
+          0,
+          old.activeTrackPos - ACTIVE_POSITION - BUFFER
+        );
+        const keepEnd = Math.min(
+          old.items.length,
+          old.activeTrackPos - ACTIVE_POSITION + VISIBLE_COUNT + BUFFER
+        );
+        return {
+          items: old.items.slice(keepStart, keepEnd),
+          activeTrackPos: old.activeTrackPos - keepStart,
+        };
+      });
+      // 3. Wait two frames so the browser paints the instant reposition,
+      //    then re-enable transitions.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTransitionEnabled(true);
+        });
+      });
+    }, 800); // well after the 0.5s CSS transition finishes
+  };
 
-  console.log(pagination);
+  useEffect(() => {
+    const prev = prevActiveRef.current;
+    if (prev === activeIndex) return;
 
-  // const offset = (activeIndex + 1) * ITEM_HEIGHT;
-  const offset = ITEM_HEIGHT;
+    // Delay the visual active highlight so it changes mid-transition
+    if (displayTimeoutRef.current) clearTimeout(displayTimeoutRef.current);
+    displayTimeoutRef.current = setTimeout(() => {
+      setDisplayActiveIndex(activeIndex);
+    }, 150); // switch ring partway through the 0.35s transition
 
-  const handlePaginationClick = (index: number) => {
+    const len = testimonials.length;
+    const forwardDist = (((activeIndex - prev) % len) + len) % len;
+    const backwardDist = (((prev - activeIndex) % len) + len) % len;
+
+    if (forwardDist <= backwardDist) {
+      // Going forward: append new items and increase activeTrackPos
+      // The offset grows → CSS transition animates smoothly upward
+      setTrack((old) => {
+        const newItems = [...old.items];
+        for (let i = 0; i < forwardDist; i++) {
+          const lastItem = newItems[newItems.length - 1];
+          newItems.push(circularIndex(lastItem + 1, len));
+        }
+        return {
+          items: newItems,
+          activeTrackPos: old.activeTrackPos + forwardDist,
+        };
+      });
+      scheduleTrim();
+    } else {
+      // Going backward:
+      backwardStepsRef.current = backwardDist;
+      setTransitionEnabled(false);
+
+      setTrack((old) => {
+        const newItems = [...old.items];
+        for (let i = 0; i < backwardDist; i++) {
+          const firstItem = newItems[0];
+          newItems.unshift(circularIndex(firstItem - 1, len));
+        }
+        return {
+          items: newItems,
+          activeTrackPos: old.activeTrackPos + backwardDist,
+        };
+      });
+
+      requestAnimationFrame(() => {
+        trackRef.current?.getBoundingClientRect();
+        const steps = backwardStepsRef.current;
+
+        setTransitionEnabled(true);
+        setTrack((old) => ({
+          ...old,
+          activeTrackPos: old.activeTrackPos - steps,
+        }));
+        scheduleTrim();
+      });
+    }
+
+    prevActiveRef.current = activeIndex;
+  }, [activeIndex]);
+
+  // The offset in pixels: we place the active item at ACTIVE_POSITION
+  const offset = (track.activeTrackPos - ACTIVE_POSITION) * ITEM_HEIGHT;
+
+  const handlePaginationClick = (realIndex: number) => {
     if (leftSwiper) {
-      leftSwiper.slideToLoop(index);
+      leftSwiper.slideToLoop(realIndex);
     }
     if (rightSwiper) {
-      rightSwiper.slideToLoop(index);
+      rightSwiper.slideToLoop(realIndex);
     }
   };
 
-  // Calculate the offset to keep active pagination always second from top (position 1)
-  // const getPaginationOffset = () => {
-  //   // Active slide should always be at position 1 (second from top)
-  //   // 4 items visible, active at position 1 (index 1, second from top)
-  //   const targetPosition = 1;
-  //   const itemHeight = 68; // 56px image + 12px gap
-  //   const offset = (activeIndex - targetPosition) * itemHeight;
-  //   return offset;
-  // };
+  const pauseAutoplay = () => {
+    if (leftSwiper?.autoplay) leftSwiper.autoplay.stop();
+  };
+
+  const resumeAutoplay = () => {
+    if (leftSwiper?.autoplay) leftSwiper.autoplay.start();
+  };
 
   return (
     <section className="relative bg-transparent pt-0 pb-16 md:pb-24 -mt-16 md:-mt-24 z-10">
       <div className="container">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden relative">
-          <div className="flex flex-col lg:flex-row ">
+        <div
+          className="bg-white rounded-2xl shadow-2xl overflow-hidden relative"
+          onMouseEnter={pauseAutoplay}
+          onMouseLeave={resumeAutoplay}
+        >
+          <div className="flex flex-col lg:flex-row">
             {/* Left Container - Testimonials Content */}
             <div className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col">
               {/* Static Header */}
@@ -315,36 +401,31 @@ export default function TestimonialsSection() {
           </div>
 
           {/* Center Pagination - Absolutely Positioned */}
-          {/* className = hidden lg:flex flex-col gap-4 items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 */}
-          <div className="testimonialPagination hidden lg:flex lg:flex-col absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ">
-            {/*<div className="relative h-[260px] overflow-hidden">*/}
-            {/*  /!* Pagination track *!/*/}
+          <div className="testimonialPagination hidden lg:flex lg:flex-col absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
             <div
-              className="testimonialPagination-track flex flex-col items-center justify-center gap-3 transition-transform duration-500 ease-in-out px-2"
+              ref={trackRef}
+              className="flex flex-col items-center justify-center gap-4 px-2"
               style={{
                 transform: `translateY(-${offset}px)`,
+                transition: transitionEnabled ? "transform 0.35s ease" : "none",
               }}
             >
-              {pagination.map((slide: any, index: number) => {
-                // const realIndex = testimonials.findIndex(
-                //   (s) => s.id === slide.id
-                // );
-
-                const realIndex = slide.realIndex; // Use realIndex from pagination data
-
+              {track.items.map((realIdx, i) => {
+                const slide = testimonials[realIdx];
+                const isActive = realIdx === displayActiveIndex;
                 return (
                   <button
-                    key={index}
-                    onClick={() => handlePaginationClick(index)}
-                    className={`testimonialPagination-thumb relative w-14 h-14 rounded-full transition-all duration-300 shrink-0 ${
-                      realIndex === activeIndex
-                        ? "ring-4 ring-primary"
-                        : "hover:scale-105 ring-4 ring-white"
+                    key={i}
+                    onClick={() => handlePaginationClick(realIdx)}
+                    className={`testimonialPagination-thumb relative rounded-full shrink-0 transition-all duration-300 ${
+                      isActive
+                        ? "ring-4 ring-primary scale-105"
+                        : "hover:scale-105 ring-4 ring-transparent"
                     }`}
                   >
                     <Image
                       src={slide.image}
-                      alt={`Testimonial ${index + 1}`}
+                      alt={`Testimonial ${realIdx + 1}`}
                       fill
                       className="object-cover rounded-full"
                     />
@@ -352,12 +433,11 @@ export default function TestimonialsSection() {
                 );
               })}
             </div>
-            {/*</div>*/}
           </div>
 
           {/* Mobile Pagination */}
-          <div className="flex lg:hidden justify-center gap-3 pb-8 px-2 absolute top-[56%] md:top-[59%]  left-1/2 -translate-x-1/2 z-20">
-            {pagination.map((img, index) => (
+          <div className="flex lg:hidden justify-center gap-3 pb-8 px-2 absolute top-[56%] md:top-[59%] left-1/2 -translate-x-1/2 z-20">
+            {testimonials.map((slide, index) => (
               <button
                 key={index}
                 onClick={() => handlePaginationClick(index)}
@@ -368,7 +448,7 @@ export default function TestimonialsSection() {
                 }`}
               >
                 <Image
-                  src={img.image}
+                  src={slide.image}
                   alt={`Testimonial ${index + 1}`}
                   fill
                   className="object-cover rounded-full"
