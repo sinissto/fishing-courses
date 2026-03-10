@@ -336,22 +336,27 @@ img {
 /* TESTIMONIALS */
 
 .testimonialPagination {
-  /*height: 246px;*/
+  /*height: 268px;*/
   /*overflow: hidden;*/
+  height: 368px;
   width: 90px;
+  overflow: hidden;
+  /*position: relative;*/
 }
 
 .testimonialPagination-track {
-  transition: transform 0.45s ease;
+  display: flex;
+  flex-direction: column;
+  transition: transform 1s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .testimonialPagination-thumb {
-  height: 70px;
-  width: 70px;
-  /*margin-bottom: 10px;*/
+  height: 68px;
+  width: 68px;
+  margin-bottom: 10px;
   opacity: 1;
   cursor: pointer;
-  transition: all 0.5s ease;
+  transition: transform 1s ease, opacity 0.35s ease;
 }
 
 .testimonialPagination-thumb img {

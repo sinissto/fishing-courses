@@ -120,13 +120,31 @@ const translations = {
   },
 };
 
-const ITEM_HEIGHT = 82; // 70px image + 12px gap
+const ITEM_HEIGHT = 80; // 70px image + 12px gap
 
 function rotateSlides(slides: Testimonial[], activeIndex: number) {
   const before = slides.slice(0, activeIndex);
   const after = slides.slice(activeIndex);
 
   return [...before.slice(-1), ...after, ...before.slice(0, -1)];
+}
+
+function circularIndex(index: number, length: number) {
+  return ((index % length) + length) % length;
+}
+
+function getPaginationWindow(
+  slides: Testimonial[],
+  activeIndex: number,
+  size = 5
+) {
+  const half = Math.floor(size / 2);
+
+  return Array.from({ length: size }, (_, i) => {
+    const offset = i - half;
+    const index = circularIndex(activeIndex + offset, slides.length);
+    return { ...slides[index], realIndex: index };
+  });
 }
 
 export default function TestimonialsSection() {
@@ -142,14 +160,20 @@ export default function TestimonialsSection() {
   //   ...testimonials.slice(0, 2),
   // ];
 
+  // const pagination = useMemo(
+  //   () => rotateSlides(testimonials, activeIndex),
+  //   [activeIndex]
+  // );
+
   const pagination = useMemo(
-    () => rotateSlides(testimonials, activeIndex),
+    () => getPaginationWindow(testimonials, activeIndex),
     [activeIndex]
   );
 
   console.log(pagination);
 
-  const offset = (activeIndex + 1) * ITEM_HEIGHT;
+  // const offset = (activeIndex + 1) * ITEM_HEIGHT;
+  const offset = ITEM_HEIGHT;
 
   const handlePaginationClick = (index: number) => {
     if (leftSwiper) {
@@ -174,7 +198,7 @@ export default function TestimonialsSection() {
     <section className="relative bg-transparent pt-0 pb-16 md:pb-24 -mt-16 md:-mt-24 z-10">
       <div className="container">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden relative">
-          <div className="flex flex-col lg:flex-row">
+          <div className="flex flex-col lg:flex-row ">
             {/* Left Container - Testimonials Content */}
             <div className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col">
               {/* Static Header */}
@@ -291,40 +315,43 @@ export default function TestimonialsSection() {
           </div>
 
           {/* Center Pagination - Absolutely Positioned */}
-          <div className="testimonialPagination hidden lg:flex flex-col gap-4 items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+          {/* className = hidden lg:flex flex-col gap-4 items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 */}
+          <div className="testimonialPagination absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 ">
             {/*<div className="relative h-[260px] overflow-hidden">*/}
             {/*  /!* Pagination track *!/*/}
-            {/*  <div*/}
-            {/*    className="testimonialPagination-track flex flex-col gap-3 transition-transform duration-500 ease-in-out px-2"*/}
-            {/*    style={{*/}
-            {/*      transform: `translateY(-${offset}px)`,*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {pagination.map((slide: Testimonial, index: number) => {
-              const realIndex = testimonials.findIndex(
-                (s) => s.id === slide.id
-              );
+            <div
+              className="testimonialPagination-track flex flex-col items-center justify-center gap-3 transition-transform duration-500 ease-in-out px-2"
+              style={{
+                transform: `translateY(-${offset}px)`,
+              }}
+            >
+              {pagination.map((slide: any, index: number) => {
+                // const realIndex = testimonials.findIndex(
+                //   (s) => s.id === slide.id
+                // );
 
-              return (
-                <button
-                  key={index}
-                  onClick={() => handlePaginationClick(index)}
-                  className={`testimonialPagination-thumb relative w-14 h-14 rounded-full transition-all duration-300 flex-shrink-0 ${
-                    realIndex === activeIndex
-                      ? "ring-4 ring-[var(--color-primary)] scale-110"
-                      : "hover:scale-105"
-                  }`}
-                >
-                  <Image
-                    src={slide.image}
-                    alt={`Testimonial ${index + 1}`}
-                    fill
-                    className="object-cover rounded-full"
-                  />
-                </button>
-              );
-            })}
-            {/*  </div>*/}
+                const realIndex = slide.realIndex; // Use realIndex from pagination data
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handlePaginationClick(index)}
+                    className={`testimonialPagination-thumb relative w-14 h-14 rounded-full transition-all duration-300 shrink-0 ${
+                      realIndex === activeIndex
+                        ? "ring-4 ring-primary"
+                        : "hover:scale-105 ring-4 ring-white"
+                    }`}
+                  >
+                    <Image
+                      src={slide.image}
+                      alt={`Testimonial ${index + 1}`}
+                      fill
+                      className="object-cover rounded-full"
+                    />
+                  </button>
+                );
+              })}
+            </div>
             {/*</div>*/}
           </div>
 
