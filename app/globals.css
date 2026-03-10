@@ -332,3 +332,35 @@ img {
   height: 100%;
   width: 100%;
 }
+
+/* TESTIMONIALS */
+
+.testimonialPagination {
+  height: 246px;
+  overflow: hidden;
+  width: 90px;
+}
+
+.testimonialPagination-track {
+  transition: transform 0.45s ease;
+}
+
+.testimonialPagination-thumb {
+  height: 70px;
+  width: 70px;
+  /*margin-bottom: 10px;*/
+  opacity: 1;
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+
+.testimonialPagination-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonialPagination-thumb.active {
+  opacity: 1;
+  transform: scale(1.1);
+}
