@@ -1,3 +1,8 @@
+import teamImg1 from "@/assets/images/team/team-1-1.png";
+import teamImg2 from "@/assets/images/team/team-1-2.png";
+import teamImg3 from "@/assets/images/team/team-1-3.png";
+import teamImg4 from "@/assets/images/team/team-1-4.jpg";
+
 export interface TeamMember {
   id: string;
   name: string;
@@ -11,57 +16,40 @@ export interface TeamMember {
 
 export const teamMembers: TeamMember[] = [
   {
-    id: '1',
-    name: 'Hans Müller',
-    title: 'Head Instructor',
-    titleDe: 'Chefausbilder',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    facebook: 'https://facebook.com',
-    instagram: 'https://instagram.com',
-    twitter: 'https://twitter.com',
+    id: "1",
+    name: "Hans Müller",
+    title: "Head Instructor",
+    titleDe: "Chefausbilder",
+    image: teamImg1.src,
+    facebook: "https://facebook.com",
+    instagram: "https://instagram.com",
+    twitter: "https://twitter.com",
   },
   {
-    id: '2',
-    name: 'Maria Schmidt',
-    title: 'Senior Instructor',
-    titleDe: 'Senior Ausbilderin',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
-    facebook: 'https://facebook.com',
-    instagram: 'https://instagram.com',
+    id: "2",
+    name: "Maria Schmidt",
+    title: "Senior Instructor",
+    titleDe: "Senior Ausbilderin",
+    image: teamImg2.src,
+    facebook: "https://facebook.com",
+    instagram: "https://instagram.com",
   },
   {
-    id: '3',
-    name: 'Thomas Weber',
-    title: 'Fishing Expert',
-    titleDe: 'Angel-Experte',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop',
-    instagram: 'https://instagram.com',
-    twitter: 'https://twitter.com',
+    id: "3",
+    name: "Thomas Weber",
+    title: "Fishing Expert",
+    titleDe: "Angel-Experte",
+    image: teamImg3.src,
+    instagram: "https://instagram.com",
+    twitter: "https://twitter.com",
   },
+
   {
-    id: '4',
-    name: 'Lisa Fischer',
-    title: 'Course Coordinator',
-    titleDe: 'Kurskoordinatorin',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
-    facebook: 'https://facebook.com',
-    instagram: 'https://instagram.com',
-  },
-  {
-    id: '5',
-    name: 'Michael Braun',
-    title: 'Sea Fishing Specialist',
-    titleDe: 'Hochsee-Spezialist',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop',
-    instagram: 'https://instagram.com',
-  },
-  {
-    id: '6',
-    name: 'Anna Becker',
-    title: 'Youth Instructor',
-    titleDe: 'Jugendausbilderin',
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop',
-    facebook: 'https://facebook.com',
-    twitter: 'https://twitter.com',
+    id: "4",
+    name: "Michael Braun",
+    title: "Sea Fishing Specialist",
+    titleDe: "Hochsee-Spezialist",
+    image: teamImg4.src,
+    instagram: "https://instagram.com",
   },
 ];
