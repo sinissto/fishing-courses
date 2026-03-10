@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { Star, Quote } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -120,7 +120,14 @@ const translations = {
   },
 };
 
-const ITEM_HEIGHT = 82; // 56px image + 12px gap
+const ITEM_HEIGHT = 82; // 70px image + 12px gap
+
+function rotateSlides(slides: Testimonial[], activeIndex: number) {
+  const before = slides.slice(0, activeIndex);
+  const after = slides.slice(activeIndex);
+
+  return [...before.slice(-1), ...after, ...before.slice(0, -1)];
+}
 
 export default function TestimonialsSection() {
   const { language } = useLanguage();
@@ -129,13 +136,18 @@ export default function TestimonialsSection() {
   const [leftSwiper, setLeftSwiper] = useState<SwiperType | null>(null);
   const [rightSwiper, setRightSwiper] = useState<SwiperType | null>(null);
 
-  const paginationSlides = [
-    ...testimonials.slice(-2),
-    ...testimonials,
-    ...testimonials.slice(0, 2),
-  ];
+  // const paginationSlides = [
+  //   ...testimonials.slice(-2),
+  //   ...testimonials,
+  //   ...testimonials.slice(0, 2),
+  // ];
 
-  console.log(paginationSlides);
+  const pagination = useMemo(
+    () => rotateSlides(testimonials, activeIndex),
+    [activeIndex]
+  );
+
+  console.log(pagination);
 
   const offset = (activeIndex + 1) * ITEM_HEIGHT;
 
@@ -279,41 +291,41 @@ export default function TestimonialsSection() {
           </div>
 
           {/* Center Pagination - Absolutely Positioned */}
-          <div className="testimonialPagination hidden lg:flex flex-col items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-            <div className="relative h-[260px] overflow-hidden">
-              {/* Pagination track */}
-              <div
-                className="testimonialPagination-track flex flex-col gap-3 transition-transform duration-500 ease-in-out px-2"
-                style={{
-                  transform: `translateY(-${offset}px)`,
-                }}
-              >
-                {paginationSlides.map((slide, index) => {
-                  const realIndex = testimonials.findIndex(
-                    (s) => s.id === slide.id
-                  );
+          <div className="testimonialPagination hidden lg:flex flex-col gap-4 items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+            {/*<div className="relative h-[260px] overflow-hidden">*/}
+            {/*  /!* Pagination track *!/*/}
+            {/*  <div*/}
+            {/*    className="testimonialPagination-track flex flex-col gap-3 transition-transform duration-500 ease-in-out px-2"*/}
+            {/*    style={{*/}
+            {/*      transform: `translateY(-${offset}px)`,*/}
+            {/*    }}*/}
+            {/*  >*/}
+            {pagination.map((slide: Testimonial, index: number) => {
+              const realIndex = testimonials.findIndex(
+                (s) => s.id === slide.id
+              );
 
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => handlePaginationClick(index)}
-                      className={`testimonialPagination-thumb relative w-14 h-14 rounded-full transition-all duration-300 flex-shrink-0 ${
-                        realIndex === activeIndex
-                          ? "ring-4 ring-[var(--color-primary)] scale-110"
-                          : "hover:scale-105"
-                      }`}
-                    >
-                      <Image
-                        src={slide.image}
-                        alt={`Testimonial ${index + 1}`}
-                        fill
-                        className="object-cover rounded-full"
-                      />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+              return (
+                <button
+                  key={index}
+                  onClick={() => handlePaginationClick(index)}
+                  className={`testimonialPagination-thumb relative w-14 h-14 rounded-full transition-all duration-300 flex-shrink-0 ${
+                    realIndex === activeIndex
+                      ? "ring-4 ring-[var(--color-primary)] scale-110"
+                      : "hover:scale-105"
+                  }`}
+                >
+                  <Image
+                    src={slide.image}
+                    alt={`Testimonial ${index + 1}`}
+                    fill
+                    className="object-cover rounded-full"
+                  />
+                </button>
+              );
+            })}
+            {/*  </div>*/}
+            {/*</div>*/}
           </div>
 
           {/* Mobile Pagination */}

@@ -336,8 +336,8 @@ img {
 /* TESTIMONIALS */
 
 .testimonialPagination {
-  height: 246px;
-  overflow: hidden;
+  /*height: 246px;*/
+  /*overflow: hidden;*/
   width: 90px;
 }
 
@@ -351,7 +351,7 @@ img {
   /*margin-bottom: 10px;*/
   opacity: 1;
   cursor: pointer;
-  transition: all 0.35s ease;
+  transition: all 0.5s ease;
 }
 
 .testimonialPagination-thumb img {
