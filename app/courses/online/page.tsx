@@ -3,6 +3,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import ImportantStateInfo from "@/components/ImportantStateInfo";
+import WhatToExpectSection from "@/components/sections/WhatToExpectSection";
 import onlineImg1 from "@/assets/images/online-courses/online-img-1-1.jpg";
 
 import { courses } from "@/data/courses";
@@ -34,14 +35,6 @@ const translations = {
         "Please note that the price does not include the examination fee (50 euro), which is paid separately to the examination authority when you register for your chosen exam date.",
       ],
       bookCourse: "Book the course",
-    },
-
-    whatToExpect: {
-      title: "What to expect at the course",
-      description: [
-        "The online fishing course in Bavaria combines our online offerings with 30 hours of online instruction, including 6 hours of practical training. With access to the online training platform, you can learn at your own pace and optimally prepare for your fishing exam. During the online instruction and practical training, you will receive specific instruction in the exam topics and practical areas. You can choose a date from numerous exam locations throughout Bavaria and register yourself with the examination authority.",
-        "Our focus is on your success – we provide intensive support to ensure you pass the exam. Respect for nature is a central tenet of our training. We emphasize that you not only learn the theory but also develop an awareness of sustainable use and nature conservation. Our online platform offers comprehensive preparation training for your fishing exam. In addition to basic knowledge, you can also expect in-depth information about nature and its sustainable use. Start your fishing journey with us!",
-      ],
     },
 
     courseRequirements: {
@@ -86,14 +79,6 @@ const translations = {
         "Bitte beachten Sie, dass die Prüfungsgebühr (50 Euro) nicht im Preis enthalten ist. Diese ist separat an die Prüfungsbehörde zu entrichten, wenn Sie sich für Ihren gewählten Prüfungstermin anmelden.",
       ],
       bookCourse: "Buchen Sie den Kurs",
-    },
-
-    whatToExpect: {
-      title: "Was Sie auf dem Kurs erwartet",
-      description: [
-        "Der Online-Angelkurs in Bayern kombiniert unser Online-Angebot mit 30 Stunden Online-Unterricht, inklusive 6 Stunden Praxistraining. Mit Zugang zur Online-Lernplattform lernen Sie in Ihrem eigenen Tempo und bereiten sich optimal auf Ihre Angelprüfung vor. Im Online-Unterricht und im Praxistraining erhalten Sie gezielte Anweisungen zu den Prüfungsthemen und praktischen Bereichen. Sie können aus zahlreichen Prüfungsorten in ganz Bayern einen Termin wählen und sich bei der Prüfungsbehörde anmelden.",
-        "Unser Ziel ist Ihr Erfolg – ​​wir bieten Ihnen intensive Unterstützung, damit Sie die Prüfung bestehen. Respekt vor der Natur ist ein zentraler Bestandteil unserer Ausbildung. Wir legen Wert darauf, dass Sie nicht nur die Theorie erlernen, sondern auch ein Bewusstsein für nachhaltige Nutzung und Naturschutz entwickeln. Unsere Online-Plattform bietet Ihnen eine umfassende Vorbereitung auf Ihre Angelprüfung. Neben Grundlagenwissen erhalten Sie fundierte Informationen über die Natur und ihre nachhaltige Nutzung. Starten Sie Ihre Angelkarriere mit uns!",
-      ],
     },
 
     courseRequirements: {
@@ -357,7 +342,10 @@ export default function OnlineCoursesPage() {
   const onlineCourse = courses.find((c) => c.id === "online-course");
   const onlineCoursePrice = onlineCourse?.price ?? t.courseIncluded.price;
 
-  const handleAddToCart = (schedule: (typeof oc.schedules)[number], index: number) => {
+  const handleAddToCart = (
+    schedule: (typeof oc.schedules)[number],
+    index: number,
+  ) => {
     const title =
       language === "de"
         ? `${schedule.title} (${schedule.startDate} - ${schedule.endDate})`
@@ -383,8 +371,22 @@ export default function OnlineCoursesPage() {
 
         {/* What is included in course */}
         <div className={"bg-secondary section-padding shadow-2xl"}>
-          <div className={"flex items-center justify-between gap-6 mb-8"}>
-            <div className={"w-1/2 px-4"}>
+          <div
+            className={
+              "flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 mb-8"
+            }
+          >
+            <div className={"w-full lg:w-1/2 h-full px-4"}>
+              <Image
+                src={onlineImg1.src}
+                alt={"Angler on the river"}
+                width={970}
+                height={970}
+                className={"w-full h-full object-cover rounded-lg"}
+              />
+            </div>
+
+            <div className={"w-full lg:w-1/2 px-4"}>
               <h3 className={"text-3xl mb-8"}>{t.courseIncluded.title}</h3>
               <ul className={"list-outside list-disc ml-8 mb-4"}>
                 {t.courseIncluded.featuresList.map((item, index) => {
@@ -418,16 +420,6 @@ export default function OnlineCoursesPage() {
                 </a>
               </div>
             </div>
-
-            <div className={"w-1/2 h-full px-4"}>
-              <Image
-                src={onlineImg1.src}
-                alt={"Angler on the river"}
-                width={970}
-                height={970}
-                className={"w-full h-full object-cover rounded-lg"}
-              />
-            </div>
           </div>
           <div className={"px-4"}>
             <ul>
@@ -445,23 +437,26 @@ export default function OnlineCoursesPage() {
           </div>
         </div>
 
-        <div className={"section-padding mt-12 flex justify-between gap-8"}>
+        <div
+          className={
+            "section-padding mt-12 flex flex-col lg:flex-row justify-between gap-8"
+          }
+        >
           {/* What to expect at the course */}
-          <div className={"w-1/2 px-4 flex flex-col items-center  shadow-2xl"}>
-            <h3 className={"text-3xl mb-8"}>{t.whatToExpect.title}</h3>
-            <div className={"h-auto flex-1"}>
-              {t.whatToExpect.description.map((item, index) => {
-                return (
-                  <p key={index} className={"text-center mb-6"}>
-                    {item}
-                  </p>
-                );
-              })}
-            </div>
+          <div
+            className={
+              "w-full lg:w-1/2 px-4 flex flex-col items-center shadow-2xl"
+            }
+          >
+            <WhatToExpectSection />
           </div>
 
           {/* Course Requirements */}
-          <div className={"w-1/2 px-4 flex flex-col items-center shadow-2xl"}>
+          <div
+            className={
+              "w-full lg:w-1/2 px-4 flex flex-col items-center shadow-2xl"
+            }
+          >
             <h3 className={"text-3xl mb-8"}>{t.courseRequirements.title}</h3>
 
             <div className={""}>
@@ -487,13 +482,15 @@ export default function OnlineCoursesPage() {
         <div id={"exam-date-info"} className={"bg-primary/15 py-24 "}>
           <h3 className={"text-center text-3xl"}>{oc.title}</h3>
 
-          <div className={"grid grid-cols-2"}>
+          <div
+            className={"grid grid-cols-1 lg:grid-cols-2 gap-10 px-2 md:px-10"}
+          >
             {/* Booking Cards */}
             {oc.schedules.map((schedule, index) => (
               <div
                 key={index}
                 className={
-                  "w-full bg-white p-6 rounded-lg mt-12 mx-auto max-w-[600px]"
+                  "max-w-full bg-white p-6 rounded-lg mt-12 lg:mx-auto"
                 }
               >
                 {/* Title */}
@@ -547,10 +544,11 @@ export default function OnlineCoursesPage() {
           </div>
         </div>
       </div>
+
       {/* Exam date info */}
       <div
         className={
-          "bg-primary my-12 py-12 text-center max-w-[700px] mx-auto rounded-md shadow-2xl"
+          "bg-primary my-12 py-12 text-center max-w-[700px] rounded-md shadow-2xl mx-4"
         }
       >
         <h3 className={"text-3xl text-white mb-8"}>{t.exam.title}</h3>
