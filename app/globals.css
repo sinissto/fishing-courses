@@ -274,12 +274,12 @@ img {
   transition: all 0.3s ease-in-out;
 }
 
-.card:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  transform: translateY(-4px);
-  background-color: var(--color-primary);
-}
+/*.card:hover {*/
+/*  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),*/
+/*    0 10px 10px -5px rgba(0, 0, 0, 0.04);*/
+/*  transform: translateY(-4px);*/
+/*  background-color: var(--color-primary);*/
+/*}*/
 
 /* In `styles/globals.css` (or your global Tailwind/CSS file) - override Swiper defaults */
 

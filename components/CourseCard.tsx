@@ -1,11 +1,14 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { ShoppingCart, Clock, MapPin, CheckCircle } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
-import { useCart } from '@/context/CartContext';
-import { Course } from '@/data/courses';
-import { formatPrice } from '@/lib/utils';
+import Image from "next/image";
+import { ShoppingCart, Clock, MapPin, CheckCircle } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { useCart } from "@/context/CartContext";
+import { Course } from "@/data/courses";
+import { formatPrice } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { FaArrowRight, FaArrowUp } from "react-icons/fa";
+import { FaArrowUpRightDots, FaCartShopping } from "react-icons/fa6";
 
 interface CourseCardProps {
   course: Course;
@@ -14,28 +17,39 @@ interface CourseCardProps {
 
 const translations = {
   en: {
-    addToCart: 'Add to Cart',
-    features: 'Features',
-    duration: 'Duration',
-    location: 'Location',
+    addToCart: "Add to Cart",
+    readMore: "Read More",
+    features: "Features",
+    duration: "Duration",
+    location: "Location",
   },
   de: {
-    addToCart: 'In den Warenkorb',
-    features: 'Merkmale',
-    duration: 'Dauer',
-    location: 'Standort',
+    addToCart: "In den Warenkorb",
+    readMore: "Mehr lesen",
+    features: "Merkmale",
+    duration: "Dauer",
+    location: "Standort",
   },
 };
 
-export default function CourseCard({ course, featured = false }: CourseCardProps) {
+export default function CourseCard({
+  course,
+  featured = false,
+}: CourseCardProps) {
   const { language } = useLanguage();
   const { addItem } = useCart();
   const t = translations[language];
+  const router = useRouter();
 
-  const title = language === 'de' ? course.titleDe : course.title;
-  const description = language === 'de' ? course.descriptionDe : course.description;
-  const duration = language === 'de' ? course.durationDe : course.duration;
-  const features = language === 'de' ? course.featuresDe : course.features;
+  const title = language === "de" ? course.titleDe : course.title;
+  const description =
+    language === "de" ? course.descriptionDe : course.description;
+  const duration = language === "de" ? course.durationDe : course.duration;
+  const features = language === "de" ? course.featuresDe : course.features;
+
+  const handeReadMore = () => {
+    router.push(course.url);
+  };
 
   const handleAddToCart = () => {
     addItem({
@@ -76,13 +90,18 @@ export default function CourseCard({ course, featured = false }: CourseCardProps
           </div>
 
           <h3 className="text-2xl font-bold mb-3">{title}</h3>
-          <p className="text-[var(--color-text-light)] mb-4 leading-relaxed">{description}</p>
+          <p className="text-[var(--color-text-light)] mb-4 leading-relaxed">
+            {description}
+          </p>
 
           <div className="mb-6">
             <h4 className="font-semibold mb-2">{t.features}:</h4>
             <ul className="grid sm:grid-cols-2 gap-2">
               {features.map((feature, index) => (
-                <li key={index} className="flex items-center gap-2 text-sm text-[var(--color-text-light)]">
+                <li
+                  key={index}
+                  className="flex items-center gap-2 text-sm text-[var(--color-text-light)]"
+                >
                   <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   {feature}
                 </li>
@@ -90,13 +109,22 @@ export default function CourseCard({ course, featured = false }: CourseCardProps
             </ul>
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            className="mt-auto btn btn-primary flex items-center justify-center gap-2"
-          >
-            <ShoppingCart className="w-5 h-5" />
-            {t.addToCart}
-          </button>
+          <div className={"flex items-center justify-between"}>
+            <button
+              onClick={handeReadMore}
+              className="btn btn-primary flex items-center justify-center gap-2"
+            >
+              {t.readMore}
+              <FaArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleAddToCart}
+              className="btn btn-primary flex items-center justify-center gap-2"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {t.addToCart}
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -129,19 +157,28 @@ export default function CourseCard({ course, featured = false }: CourseCardProps
             {course.location}
           </span>
         </div>
-
         <h3 className="text-lg font-bold mb-2 line-clamp-2">{title}</h3>
         <p className="text-sm text-[var(--color-text-light)] mb-4 line-clamp-2">
-          {language === 'de' ? course.shortDescriptionDe : course.shortDescription}
+          {language === "de"
+            ? course.shortDescriptionDe
+            : course.shortDescription}
         </p>
-
-        <button
-          onClick={handleAddToCart}
-          className="w-full btn btn-primary flex items-center justify-center gap-2"
-        >
-          <ShoppingCart className="w-4 h-4" />
-          {t.addToCart}
-        </button>
+        <div className={"flex items-center justify-between"}>
+          <button
+            onClick={handeReadMore}
+            className="btn btn-primary flex items-center justify-center gap-2"
+          >
+            {t.readMore}
+            <FaArrowRight className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleAddToCart}
+            className="btn btn-primary flex items-center justify-center gap-2"
+          >
+            <FaCartShopping className="w-4 h-4" />
+            {t.addToCart}
+          </button>
+        </div>
       </div>
     </div>
   );
